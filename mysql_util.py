@@ -6,7 +6,7 @@ def init_db():
   db = MySQLdb.connect(host=db_info['host'], user=db_info['user'], \
       passwd=db_info['passwd'], unix_socket=db_info['socket'])
   cursor = db.cursor()
-  if not is_db_exists(db, cursor, db_info['db']):
+  if not does_db_exist(db, cursor, db_info['db']):
     cursor.execute("CREATE DATABASE " + db_info['db'] + " DEFAULT CHARACTER SET utf8")
   db.select_db(db_info['db'])
 
@@ -43,13 +43,13 @@ def get_db_info():
   f.close()
   return db_info
 
-def is_db_exists(db, cursor, db_name):
+def does_db_exist(db, cursor, db_name):
   cursor.execute("""SELECT schema_name FROM information_schema.schemata """ + \
      """WHERE schema_name = %s""", (db_name))
   row = cursor.fetchone()
   return row != None
 
-def is_tbl_exists(db, cursor, table_name):
+def does_tbl_exist(db, cursor, table_name):
   db_info = get_db_info()
   cursor.execute("""SELECT * FROM information_schema.tables """ + \
       """WHERE table_schema = %s AND table_name = %s""", (db_info['db'], table_name))
@@ -57,7 +57,7 @@ def is_tbl_exists(db, cursor, table_name):
   return row != None
 
 def drop_tbl(db, cursor, table_name):
-  if is_tbl_exists(db, cursor, table_name):
+  if does_tbl_exist(db, cursor, table_name):
     cursor.execute("""DROP TABLE """ + table_name)
 
 
