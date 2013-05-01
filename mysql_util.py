@@ -20,7 +20,7 @@ def close_db(db, cursor):
   cursor.close()
   db.close()
 
-def is_this_a_setting_line(line):
+def _is_this_a_setting_line(line):
   line = line.strip()
   if line == '':
     return False
@@ -32,7 +32,7 @@ def get_db_info():
   db_info = { }
   f = open('settings/mysql_settings', 'r')
   for line in f:
-    if not is_this_a_setting_line(line):
+    if not _is_this_a_setting_line(line):
       continue
     field, val = line.strip().split(':')
     field = field.strip()
