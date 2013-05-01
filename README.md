@@ -18,3 +18,8 @@ passwd: "password-of-root"
 socket: "/var/lib/mysql/mysql.sock"
 db: "database_name"
 
+TODO
+----
+1. Add the testing files
+
+2. Add a function to backup all tables in the given database
