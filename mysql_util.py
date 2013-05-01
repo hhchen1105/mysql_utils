@@ -1,19 +1,19 @@
 import MySQLdb
 import MySQLdb.cursors
 
-def init_db():
+def init_db(charset='utf8'):
   db_info = get_db_info()
   db = MySQLdb.connect(host=db_info['host'], user=db_info['user'], \
       passwd=db_info['passwd'], unix_socket=db_info['socket'])
   cursor = db.cursor()
   if not does_db_exist(db, cursor, db_info['db']):
-    cursor.execute("CREATE DATABASE " + db_info['db'] + " DEFAULT CHARACTER SET utf8")
+    cursor.execute("CREATE DATABASE " + db_info['db'] + " DEFAULT CHARACTER SET " + charset)
   db.select_db(db_info['db'])
 
-  db.set_character_set('utf8')
-  cursor.execute('SET NAMES utf8;')
-  cursor.execute('SET CHARACTER SET utf8;')
-  cursor.execute('SET character_set_connection=utf8;')
+  db.set_character_set(charset)
+  cursor.execute('SET NAMES ' + charset + ';')
+  cursor.execute('SET CHARACTER SET ' + charset + ';')
+  cursor.execute('SET character_set_connection=' + charset + ';')
   return db, cursor
 
 def close_db(db, cursor):
