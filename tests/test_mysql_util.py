@@ -43,10 +43,10 @@ class TestMySQLUtil():
     assert_equal(mysql_util.does_db_exist(self.db_info['db']), True)
     assert_equal(mysql_util.does_db_exist('37a_23yumaro208dlzj_sdlfkzqpo'), False)
 
-  def test_does_tbl_exist(self):
-    assert_equal(mysql_util.does_tbl_exist('foo'), True)
-    assert_equal(mysql_util.does_tbl_exist('bar'), True)
-    assert_equal(mysql_util.does_tbl_exist('not_exist_tb'), False)
+  def test_does_table_exist(self):
+    assert_equal(mysql_util.does_table_exist('foo'), True)
+    assert_equal(mysql_util.does_table_exist('bar'), True)
+    assert_equal(mysql_util.does_table_exist('not_exist_tb'), False)
 
   def test_get_tables(self):
     tables = mysql_util.get_tables()
@@ -54,8 +54,8 @@ class TestMySQLUtil():
     assert_true('foo' in tables)
     assert_true('bar' in tables)
 
-  def test_drop_tbl(self):
-    mysql_util.drop_tbl('bar')
-    assert_equal(mysql_util.does_tbl_exist('bar'), False)
+  def test_drop_table(self):
+    mysql_util.drop_table('bar')
+    assert_equal(mysql_util.does_table_exist('bar'), False)
 
 

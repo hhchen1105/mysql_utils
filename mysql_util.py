@@ -61,7 +61,7 @@ def does_db_exist(db_name):
   db.close()
   return row != None
 
-def does_tbl_exist(table_name):
+def does_table_exist(table_name):
   db_info = get_db_info()
   db, cursor = init_db()
   cursor.execute("""SELECT * FROM information_schema.tables """ + \
@@ -70,9 +70,9 @@ def does_tbl_exist(table_name):
   close_db(db, cursor)
   return row != None
 
-def drop_tbl(table_name):
+def drop_table(table_name):
   db, cursor = init_db()
-  if does_tbl_exist(table_name):
+  if does_table_exist(table_name):
     cursor.execute("""DROP TABLE """ + table_name)
   close_db(db, cursor)
 
