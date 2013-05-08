@@ -3,9 +3,15 @@ mysql_utils
 
 Providing commonly used MySQL utilities.
 
+Contact
+-------
+Hung-Hsuan Chen (hhchen@psu.edu)
+
 Required library
 ----------------
-1. MySQL-Python: http://mysql-python.sourceforge.net/
+<ol>
+  <li>MySQL-Python: http://mysql-python.sourceforge.net/</li>
+</ol>
 
 Usage
 -----
