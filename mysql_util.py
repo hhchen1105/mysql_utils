@@ -1,12 +1,12 @@
 import MySQLdb
 import MySQLdb.cursors
 
-def init_db(charset='utf8', create_if_not_exist=True):
+def init_db(charset='utf8', create_if_not_exist=False):
   db_info = get_db_info()
   db = MySQLdb.connect(host=db_info['host'], user=db_info['user'], \
       passwd=db_info['passwd'], unix_socket=db_info['socket'])
   cursor = db.cursor()
-  if not does_db_exist(db, cursor, db_info['db']):
+  if not does_db_exist(db_info['db']):
     if create_if_not_exist:
       cursor.execute("CREATE DATABASE " + db_info['db'] + " DEFAULT CHARACTER SET " + charset)
     else:
@@ -47,21 +47,33 @@ def get_db_info():
   f.close()
   return db_info
 
-def does_db_exist(db, cursor, db_name):
+def does_db_exist(db_name):
+  db_info = get_db_info()
+  db = MySQLdb.connect(host=db_info['host'], user=db_info['user'], \
+      passwd=db_info['passwd'], unix_socket=db_info['socket'])
+  cursor = db.cursor()
+
   cursor.execute("""SELECT schema_name FROM information_schema.schemata """ + \
      """WHERE schema_name = %s""", (db_name))
   row = cursor.fetchone()
+
+  cursor.close()
+  db.close()
   return row != None
 
-def does_tbl_exist(db, cursor, table_name):
+def does_tbl_exist(table_name):
   db_info = get_db_info()
+  db, cursor = init_db()
   cursor.execute("""SELECT * FROM information_schema.tables """ + \
       """WHERE table_schema = %s AND table_name = %s""", (db_info['db'], table_name))
   row = cursor.fetchone()
+  close_db(db, cursor)
   return row != None
 
-def drop_tbl(db, cursor, table_name):
-  if does_tbl_exist(db, cursor, table_name):
+def drop_tbl(table_name):
+  db, cursor = init_db()
+  if does_tbl_exist(table_name):
     cursor.execute("""DROP TABLE """ + table_name)
+  close_db(db, cursor)
 
 
