@@ -7,7 +7,7 @@ import shutil
 import sys
 import tempfile
 
-from nose.tools import assert_equal, assert_true
+from nose.tools import assert_equal, assert_true, assert_false
 
 sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -62,6 +62,43 @@ class TestMySQLUtil():
     assert_true('foo.sql' in os.listdir(tmp_backup_dir))
     assert_true('bar.sql' in os.listdir(tmp_backup_dir))
     shutil.rmtree(tmp_backup_dir)
+
+  def test_col_exist(self):
+    assert_true(mysql_util.does_col_exist('foo', 'col1'))
+    assert_true(mysql_util.does_col_exist('foo', 'col2'))
+    assert_false(mysql_util.does_col_exist('foo', 'col3'))
+    assert_true(mysql_util.does_col_exist('bar', 'field1'))
+    assert_true(mysql_util.does_col_exist('bar', 'field2'))
+    assert_false(mysql_util.does_col_exist('bar', 'field3'))
+
+  def test_add_index(self):
+    mysql_util.add_index('foo', 'col1', 'index')
+    mysql_util.add_index('foo', 'col2', 'unique index')
+    mysql_util.add_index('bar', 'field1', 'fulltext')
+
+    self.cursor.execute("SHOW INDEX FROM foo where column_name = 'col1'")
+    row = self.cursor.fetchone()
+    assert_true(row is not None)
+    non_unique = row[1]
+    index_type = row[10]
+    assert_equal(non_unique, 1)
+    assert_equal(index_type, 'BTREE')
+
+    self.cursor.execute("SHOW INDEX FROM foo where column_name = 'col2'")
+    row = self.cursor.fetchone()
+    assert_true(row is not None)
+    non_unique = row[1]
+    index_type = row[10]
+    assert_equal(non_unique, 0)
+    assert_equal(index_type, 'BTREE')
+
+    self.cursor.execute("SHOW INDEX FROM bar where column_name = 'field1'")
+    row = self.cursor.fetchone()
+    assert_true(row is not None)
+    non_unique = row[1]
+    index_type = row[10]
+    assert_equal(non_unique, 1)
+    assert_equal(index_type, 'FULLTEXT')
 
   def test_drop_table(self):
     mysql_util.drop_table('bar')

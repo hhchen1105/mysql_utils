@@ -112,3 +112,26 @@ def backup_all_tables(backup_dir, is_archive=True):
         os.path.join(backup_dir, '*')
     os.system(targz_cmd)
 
+def does_col_exist(table_name, column_name):
+  db_info = get_db_info()
+  db, cursor = init_db()
+  cursor.execute("""SELECT * FROM information_schema.columns """ + \
+      """WHERE table_schema = %s AND table_name = %s AND column_name LIKE %s""", \
+      (db_info['db'], table_name, column_name))
+  row = cursor.fetchone()
+  close_db(db, cursor)
+  return row != None
+
+def add_index(tbl_name, col_name, idx_type):
+  if idx_type.lower() not in ['index', 'unique index', 'fulltext']:
+    raise Exception('index type can only be "index" or "unique index"')
+
+  if not does_table_exist(tbl_name):
+    raise Exception("Table " + tbl_name + " does not exist in the database")
+  if not does_col_exist(tbl_name, col_name):
+    raise Exception("Column " + col_name + " does not exist in table " + tbl_name)
+
+  db, cursor = init_db()
+  cursor.execute('ALTER TABLE ' + tbl_name + ' ADD ' + idx_type + '(' + col_name + ')')
+  close_db(db, cursor)
+
