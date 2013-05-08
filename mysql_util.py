@@ -1,6 +1,10 @@
 import MySQLdb
 import MySQLdb.cursors
 
+import datetime
+import os
+import sys
+
 def init_db(charset='utf8', create_if_not_exist=False):
   db_info = get_db_info()
   db = MySQLdb.connect(host=db_info['host'], user=db_info['user'], \
@@ -82,4 +86,29 @@ def get_tables():
   rows = cursor.fetchall()
   close_db(db, cursor)
   return [r[0] for r in rows]
+
+def backup_all_tables(backup_dir, is_archive=True):
+  print 'before ' + backup_dir
+  backup_dir = os.path.realpath(backup_dir)
+  print 'after ' + backup_dir
+  if not os.path.isdir(backup_dir):
+    os.mkdir(backup_dir)
+  db_info = get_db_info()
+  tables = get_tables()
+  num_tables = len(tables)
+  print('Dumping sql files:')
+  for i, table in enumerate(tables):
+    sys.stdout.write("%s (%d/%d)\n" % (table, i+1, num_tables))
+    filename = os.path.join(backup_dir, table + ".sql")
+    dump_cmd = "mysqldump -u" + db_info['user'] +" -p"+ db_info['passwd'] + \
+        " " + db_info['db'] + " '" + table + "' > '"+filename+"'"
+    os.system(dump_cmd)
+
+  if is_archive:
+    print('Making tar-gz file...')
+    targz_cmd = 'tar -zcvf ' + \
+        os.path.join(backup_dir, '..', \
+          db_info['db'] + datetime.date.today().strftime("%m%d%Y") + '.tar.gz ') + \
+        os.path.join(backup_dir, '*')
+    os.system(targz_cmd)
 

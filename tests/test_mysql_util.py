@@ -3,7 +3,9 @@
 import MySQLdb
 import MySQLdb.cursors
 import os
+import shutil
 import sys
+import tempfile
 
 from nose.tools import assert_equal, assert_true
 
@@ -54,8 +56,14 @@ class TestMySQLUtil():
     assert_true('foo' in tables)
     assert_true('bar' in tables)
 
+  def test_backup_tables(self):
+    tmp_backup_dir = tempfile.mkdtemp()
+    mysql_util.backup_all_tables(tmp_backup_dir, is_archive=False)
+    assert_true('foo.sql' in os.listdir(tmp_backup_dir))
+    assert_true('bar.sql' in os.listdir(tmp_backup_dir))
+    shutil.rmtree(tmp_backup_dir)
+
   def test_drop_table(self):
     mysql_util.drop_table('bar')
     assert_equal(mysql_util.does_table_exist('bar'), False)
-
 
