@@ -20,6 +20,7 @@ db: "database_name"
 
 TODO
 ----
-1. Add the testing files
-
-2. Add a function to backup all tables in the given database
+<ol>
+  <li>Backup all tables in the given database</li>
+  <li>Add index to a certain column of a table</li>
+<ol>
