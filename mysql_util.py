@@ -76,4 +76,10 @@ def drop_tbl(table_name):
     cursor.execute("""DROP TABLE """ + table_name)
   close_db(db, cursor)
 
+def get_tables():
+  db, cursor = init_db()
+  cursor.execute("SHOW TABLES")
+  rows = cursor.fetchall()
+  close_db(db, cursor)
+  return [r[0] for r in rows]
 

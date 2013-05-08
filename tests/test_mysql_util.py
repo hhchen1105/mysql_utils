@@ -5,7 +5,7 @@ import MySQLdb.cursors
 import os
 import sys
 
-from nose.tools import assert_equal
+from nose.tools import assert_equal, assert_true
 
 sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -47,6 +47,12 @@ class TestMySQLUtil():
     assert_equal(mysql_util.does_tbl_exist('foo'), True)
     assert_equal(mysql_util.does_tbl_exist('bar'), True)
     assert_equal(mysql_util.does_tbl_exist('not_exist_tb'), False)
+
+  def test_get_tables(self):
+    tables = mysql_util.get_tables()
+    assert_equal(len(tables), 2)
+    assert_true('foo' in tables)
+    assert_true('bar' in tables)
 
   def test_drop_tbl(self):
     mysql_util.drop_tbl('bar')
