@@ -27,6 +27,4 @@ db: "database_name"
 TODO
 ----
 <ol>
-  <li>Backup all tables in the given database</li>
-  <li>Add index to a certain column of a table</li>
 <ol>
