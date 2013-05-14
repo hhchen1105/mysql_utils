@@ -88,9 +88,8 @@ def get_tables():
   return [r[0] for r in rows]
 
 def backup_all_tables(backup_dir, is_archive=True):
-  print 'before ' + backup_dir
   backup_dir = os.path.realpath(backup_dir)
-  print 'after ' + backup_dir
+  print backup_dir
   if not os.path.isdir(backup_dir):
     os.mkdir(backup_dir)
   db_info = get_db_info()
