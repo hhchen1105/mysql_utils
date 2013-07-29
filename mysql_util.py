@@ -42,9 +42,12 @@ def get_db_info():
   for line in f:
     if not _is_this_a_setting_line(line):
       continue
-    field, val = line.strip().split(':')
-    field = field.strip()
-    val = val.strip()
+    line = line.split('#')[0] # remove comments at the end of the line
+    fields = line.strip().split(':')
+    if len(fields) < 2:
+      raise Exception("Wrong format in the solr setting file")
+    field = fields[0].strip()
+    val = ':'.join(fields[1:]).strip()
     if (val[0] == '"' and val[-1] == '"') or (val[0] == "'" and val[-1] == "'"):
       val = val[1:-1]
     db_info[field] = val
