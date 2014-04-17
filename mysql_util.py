@@ -61,7 +61,7 @@ def does_db_exist(db_name):
   cursor = db.cursor()
 
   cursor.execute("""SELECT schema_name FROM information_schema.schemata """ + \
-     """WHERE schema_name = %s""", (db_name))
+     """WHERE schema_name = %s""", [db_name])
   row = cursor.fetchone()
 
   cursor.close()
@@ -72,7 +72,7 @@ def does_table_exist(table_name):
   db_info = get_db_info()
   db, cursor = init_db()
   cursor.execute("""SELECT * FROM information_schema.tables """ + \
-      """WHERE table_schema = %s AND table_name = %s""", (db_info['db'], table_name))
+      """WHERE table_schema = %s AND table_name = %s""", [db_info['db'], table_name])
   row = cursor.fetchone()
   close_db(db, cursor)
   return row != None
@@ -119,7 +119,7 @@ def does_col_exist(table_name, column_name):
   db, cursor = init_db()
   cursor.execute("""SELECT * FROM information_schema.columns """ + \
       """WHERE table_schema = %s AND table_name = %s AND column_name LIKE %s""", \
-      (db_info['db'], table_name, column_name))
+      [db_info['db'], table_name, column_name])
   row = cursor.fetchone()
   close_db(db, cursor)
   return row != None
